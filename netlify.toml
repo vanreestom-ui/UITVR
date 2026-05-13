@@ -1,0 +1,24 @@
+[build]
+  command = "npm install"
+  functions = "netlify/functions"
+  publish = "public"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NODE_ENV = "production"
+
+[functions]
+  node_bundler = "zisi"
+  external_node_modules = ["better-sqlite3"]
+  included_files = [
+    "app/frontend/**",
+    "app/routes/**",
+    "app/db.js",
+    "app/server.js"
+  ]
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true

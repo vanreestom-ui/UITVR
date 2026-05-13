@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UITVR — Trésorerie</title>
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body class="dashboard-page">
+
+  <div class="loading-screen" id="loading-screen">
+    <div class="spinner"></div><span>Chargement…</span>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo"><div class="logo-badge">BDE</div><span class="logo-text">UITVR</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <span class="nav-label">Navigation</span>
+      <a class="nav-item" href="/dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Tableau de bord</a>
+      <a class="nav-item" href="/faq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>FAQ &amp; Annonces</a>
+      <a class="nav-item" href="/events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Événements</a>
+      <a class="nav-item active" href="/treasury"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Trésorerie</a>
+      <a class="nav-item" href="/admin" id="nav-admin-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Administration</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-avatar" id="sidebar-avatar">?</div>
+      <div class="sidebar-user-info">
+        <span class="sidebar-user-name" id="sidebar-user-name">…</span>
+        <span class="sidebar-user-role" id="sidebar-user-role"></span>
+      </div>
+      <button class="btn-logout" id="logout-btn" aria-label="Se déconnecter">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <span class="topbar-title" id="topbar-title">Trésorerie</span>
+    </header>
+
+    <div class="content hidden" id="app-content">
+      <div class="treasury-summary" id="summary"></div>
+      <div id="role-breakdown" class="hidden"></div>
+
+      <div class="panel-toolbar">
+        <div class="filter-pills" id="state-filter">
+          <button class="pill active" data-state="">Tous</button>
+          <button class="pill" data-state="real">Réels</button>
+          <button class="pill" data-state="provisional">Prévisionnels</button>
+        </div>
+        <button class="btn btn-primary" id="new-line-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nouvelle ligne
+        </button>
+      </div>
+
+      <div class="panel-toolbar" id="advanced-filters" style="margin-top:-0.5rem;">
+        <div class="filter-pills">
+          <button class="pill active" data-kind="">Tous types</button>
+          <button class="pill" data-kind="expense">Dépenses</button>
+          <button class="pill" data-kind="revenue">Revenus</button>
+        </div>
+        <div id="role-filter-wrap" class="hidden">
+          <select id="role-filter" style="padding:0.375rem 0.75rem;border:1px solid var(--border);border-radius:var(--radius-full);background:var(--surface);font-size:0.8125rem;font-weight:600;color:var(--text);">
+            <option value="">Tous les pôles</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="line-list" class="line-list"></div>
+      <div class="empty-state hidden" id="line-empty"><p>Aucune ligne enregistrée.</p></div>
+    </div>
+  </main>
+
+  <div class="modal-overlay hidden" id="modal-line">
+    <div class="modal">
+      <div class="modal-header"><h2 id="modal-line-title">Nouvelle ligne</h2><button class="modal-close" data-close>×</button></div>
+      <form id="line-form" class="modal-body">
+        <input type="hidden" id="ln-id">
+        <div class="form-group"><label for="ln-label">Intitulé</label><input type="text" id="ln-label" required maxlength="200" placeholder="Ex : Sponsor entreprise X"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+          <div class="form-group"><label for="ln-amount">Montant (€)</label><input type="number" id="ln-amount" step="0.01" min="0" required></div>
+          <div class="form-group"><label for="ln-kind">Type</label><select id="ln-kind"><option value="expense">Dépense</option><option value="revenue">Revenu</option></select></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+          <div class="form-group"><label for="ln-state">État</label><select id="ln-state"><option value="provisional">Prévisionnel</option><option value="real">Réel</option></select></div>
+          <div class="form-group"><label for="ln-category">Catégorie (optionnel)</label><input type="text" id="ln-category" maxlength="60" placeholder="Ex : Sponsoring"></div>
+        </div>
+        <div class="form-group hidden" id="role-wrap"><label for="ln-role">Pôle concerné</label><select id="ln-role"></select></div>
+        <div class="form-group"><label for="ln-comment">Commentaire (optionnel)</label><textarea id="ln-comment" rows="3" placeholder="Précisions, contexte…"></textarea></div>
+        <div class="modal-actions"><button type="button" class="btn btn-ghost" data-close>Annuler</button><button type="submit" class="btn btn-primary">Enregistrer</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast hidden" id="toast"></div>
+  <script src="/assets/treasury.js"></script>
+</body>
+</html>

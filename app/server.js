@@ -1,0 +1,63 @@
+const express = require('express');
+const session = require('express-session');
+const path = require('path');
+
+require('./db');
+
+const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'uitvr-unified-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  },
+}));
+
+app.use(express.static(path.join(__dirname, 'frontend')));
+
+app.use('/api/auth',     require('./routes/auth'));
+app.use('/api/dashboard', require('./routes/dashboard'));
+app.use('/api/faq',       require('./routes/faq'));
+app.use('/api/events',    require('./routes/events'));
+app.use('/api/treasury',  require('./routes/treasury'));
+app.use('/api/admin',     require('./routes/admin'));
+
+function requireAuth(req, res) {
+  if (!req.session.userId) return res.redirect('/');
+  return null;
+}
+
+const pages = [
+  { path: '/dashboard', file: 'dashboard.html' },
+  { path: '/faq',       file: 'faq.html' },
+  { path: '/events',    file: 'events.html' },
+  { path: '/treasury',  file: 'treasury.html' },
+  { path: '/admin',     file: 'admin.html' },
+];
+
+for (const { path: p, file } of pages) {
+  app.get(p, (req, res) => {
+    if (requireAuth(req, res)) return;
+    res.sendFile(path.join(__dirname, 'frontend', file));
+  });
+}
+
+app.get('/', (req, res) => {
+  if (req.session.userId) return res.redirect('/dashboard');
+  res.sendFile(path.join(__dirname, 'frontend', 'login.html'));
+});
+
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log(`UITVR → http://localhost:${PORT}`));
+}
+
+module.exports = app;

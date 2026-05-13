@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UITVR — Événements</title>
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body class="dashboard-page">
+
+  <div class="loading-screen" id="loading-screen">
+    <div class="spinner"></div><span>Chargement…</span>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo"><div class="logo-badge">BDE</div><span class="logo-text">UITVR</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <span class="nav-label">Module 3</span>
+      <a class="nav-item active" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Événements
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-avatar" id="sidebar-avatar">?</div>
+      <div class="sidebar-user-info">
+        <span class="sidebar-user-name" id="sidebar-user-name">…</span>
+        <span class="sidebar-user-role" id="sidebar-user-role"></span>
+      </div>
+      <button class="btn-logout" id="logout-btn" aria-label="Se déconnecter">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <span class="topbar-title">Événements</span>
+    </header>
+
+    <div class="content hidden" id="app-content">
+
+      <div class="panel-toolbar">
+        <div class="filter-pills" id="event-filters">
+          <button class="pill active" data-filter="all">Tous</button>
+          <button class="pill" data-filter="mine">Mes événements</button>
+          <button class="pill" data-filter="validated">Validés</button>
+          <button class="pill hidden" data-filter="pending" id="filter-pending">En attente</button>
+          <button class="pill" data-filter="rejected">Refusés</button>
+        </div>
+        <button class="btn btn-primary" id="new-event-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nouvel événement
+        </button>
+      </div>
+
+      <div id="event-list" class="item-list"></div>
+      <div class="empty-state hidden" id="event-empty">
+        <p>Aucun événement pour ce filtre.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal: New / Edit Event -->
+  <div class="modal-overlay hidden" id="modal-event">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-event-title">Nouvel événement</h2>
+        <button class="modal-close" data-close>×</button>
+      </div>
+      <form id="event-form" class="modal-body">
+        <input type="hidden" id="ev-id">
+        <div class="form-group">
+          <label for="ev-name">Nom</label>
+          <input type="text" id="ev-name" required maxlength="200" placeholder="Ex : Gala 2026">
+        </div>
+        <div class="form-group">
+          <label for="ev-date">Date</label>
+          <input type="date" id="ev-date">
+        </div>
+        <div class="form-group">
+          <label for="ev-desc">Description</label>
+          <textarea id="ev-desc" rows="4" placeholder="Description de l'événement…"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-close>Annuler</button>
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Reject reason -->
+  <div class="modal-overlay hidden" id="modal-reject">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Motif du refus</h2>
+        <button class="modal-close" data-close>×</button>
+      </div>
+      <form id="reject-form" class="modal-body">
+        <input type="hidden" id="rej-event-id">
+        <div class="form-group">
+          <label for="rej-comment">Précisez le motif (visible par le pôle organisateur)</label>
+          <textarea id="rej-comment" rows="4" required placeholder="Ex : revoir le budget transport, manque de détails…"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-close>Annuler</button>
+          <button type="submit" class="btn btn-danger">Refuser</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast hidden" id="toast"></div>
+
+  <script src="/assets/app.js"></script>
+</body>
+</html>

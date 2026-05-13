@@ -1,0 +1,12 @@
+{
+  "name": "uitvr",
+  "version": "1.0.0",
+  "description": "UITVR — Plateforme de gestion BDE",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^9.4.3",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "serverless-http": "^3.2.0"
+  }
+}
