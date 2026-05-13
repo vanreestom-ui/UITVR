@@ -1,5 +1,5 @@
 const express = require('express');
-const session = require('express-session');
+const cookieSession = require('cookie-session');
 const path = require('path');
 
 const db = require('./db');
@@ -9,16 +9,14 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'uitvr-unified-secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-  },
+const isProd = process.env.NODE_ENV === 'production';
+app.use(cookieSession({
+  name: 'uitvr',
+  secret: process.env.SESSION_SECRET || 'uitvr-unified-secret-2024',
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  secure: isProd,
+  httpOnly: true,
+  sameSite: isProd ? 'none' : 'lax',
 }));
 
 // Wait for DB before processing any API request
