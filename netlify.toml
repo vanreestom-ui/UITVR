@@ -9,12 +9,12 @@
 
 [functions]
   node_bundler = "zisi"
-  external_node_modules = ["better-sqlite3"]
   included_files = [
     "app/frontend/**",
     "app/routes/**",
     "app/db.js",
-    "app/server.js"
+    "app/server.js",
+    "node_modules/sql.js/dist/sql-wasm.wasm"
   ]
 
 [[redirects]]

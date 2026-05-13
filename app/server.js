@@ -2,7 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const path = require('path');
 
-require('./db');
+const db = require('./db');
 
 const app = express();
 
@@ -21,9 +21,15 @@ app.use(session({
   },
 }));
 
+// Wait for DB before processing any API request
+app.use('/api', async (req, res, next) => {
+  try { await db.ready(); next(); }
+  catch (e) { res.status(503).json({ error: 'Base de données non disponible.' }); }
+});
+
 app.use(express.static(path.join(__dirname, 'frontend')));
 
-app.use('/api/auth',     require('./routes/auth'));
+app.use('/api/auth',      require('./routes/auth'));
 app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/faq',       require('./routes/faq'));
 app.use('/api/events',    require('./routes/events'));
@@ -31,8 +37,8 @@ app.use('/api/treasury',  require('./routes/treasury'));
 app.use('/api/admin',     require('./routes/admin'));
 
 function requireAuth(req, res) {
-  if (!req.session.userId) return res.redirect('/');
-  return null;
+  if (!req.session.userId) { res.redirect('/'); return true; }
+  return false;
 }
 
 const pages = [
@@ -57,7 +63,9 @@ app.get('/', (req, res) => {
 
 if (require.main === module) {
   const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => console.log(`UITVR → http://localhost:${PORT}`));
+  db.ready().then(() => {
+    app.listen(PORT, () => console.log(`UITVR → http://localhost:${PORT}`));
+  });
 }
 
 module.exports = app;
